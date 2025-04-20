@@ -12,6 +12,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { icons } from "@/constants/icons";
 import useFetch from "@/services/usefetch";
 import { fetchMovieDetails } from "@/services/api";
+import { saveMovie } from "@/services/appwrite";
+import Toast from "react-native-toast-message";
 
 interface MovieInfoProps {
   label: string;
@@ -42,6 +44,25 @@ const Details = () => {
       </SafeAreaView>
     );
 
+  const handleSaveMovie = async () => {
+    try {
+      await saveMovie(movie as any);
+      Toast.show({
+        type: "success",
+        text1: "Saved!",
+        text2: "Movie saved to your list 🎉",
+        position: "bottom",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Oops!",
+        text2: "Failed to save movie 😢",
+        position: "bottom",
+      });
+    }
+  };
+
   return (
     <View className="bg-primary flex-1">
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
@@ -54,9 +75,12 @@ const Details = () => {
             resizeMode="stretch"
           />
 
-          <TouchableOpacity className="absolute bottom-5 right-5 rounded-full size-14 bg-white flex items-center justify-center">
+          <TouchableOpacity
+            onPress={handleSaveMovie}
+            className="absolute bottom-5 right-5 rounded-full size-14 bg-white flex items-center justify-center"
+          >
             <Image
-              source={icons.play}
+              source={icons.save}
               className="w-6 h-7 ml-1"
               resizeMode="stretch"
             />
